@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-reanimated/android/CMakeLists.txt b/node_modules/react-native-reanimated/android/CMakeLists.txt
+index c4e4df9..12d9f11 100644
+--- a/node_modules/react-native-reanimated/android/CMakeLists.txt
++++ b/node_modules/react-native-reanimated/android/CMakeLists.txt
+@@ -100,3 +100,8 @@ if(ReactAndroid_VERSION_MINOR GREATER_EQUAL 76)
+ else()
+   target_link_libraries(reanimated ReactAndroid::react_nativemodule_core)
+ endif()
++
++find_library(REANIMATED_CPP_SHARED c++_shared)
++if(REANIMATED_CPP_SHARED)
++  target_link_libraries(reanimated ${REANIMATED_CPP_SHARED})
++endif()

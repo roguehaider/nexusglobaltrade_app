@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-native-screens/android/CMakeLists.txt b/node_modules/react-native-screens/android/CMakeLists.txt
+index 86ec079..d8d62da 100644
+--- a/node_modules/react-native-screens/android/CMakeLists.txt
++++ b/node_modules/react-native-screens/android/CMakeLists.txt
+@@ -78,3 +78,9 @@ else()
+         android
+     )
+ endif()
++
++# Windows NDK 27 + lld: ensure libc++ is linked for fbjni/RN symbols
++find_library(RNSCREENS_CPP_SHARED c++_shared)
++if(RNSCREENS_CPP_SHARED)
++  target_link_libraries(rnscreens ${RNSCREENS_CPP_SHARED})
++endif()
