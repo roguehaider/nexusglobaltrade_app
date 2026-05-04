@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-native-worklets/android/CMakeLists.txt b/node_modules/react-native-worklets/android/CMakeLists.txt
+index 1d949d6..67f350c 100644
+--- a/node_modules/react-native-worklets/android/CMakeLists.txt
++++ b/node_modules/react-native-worklets/android/CMakeLists.txt
+@@ -122,3 +122,9 @@ elseif(${JS_RUNTIME} STREQUAL "jsc")
+     target_link_libraries(worklets ReactAndroid::jscexecutor)
+   endif()
+ endif()
++
++# Ensure libc++ is linked (needed on Windows NDK/lld where dependency libs may not pull c++_shared)
++find_library(WORKLETS_CPP_SHARED c++_shared)
++if(WORKLETS_CPP_SHARED)
++  target_link_libraries(worklets ${WORKLETS_CPP_SHARED})
++endif()

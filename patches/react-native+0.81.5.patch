@@ -1,0 +1,30 @@
+diff --git a/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake b/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake
+index baa0fef..00f3845 100644
+--- a/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake
++++ b/node_modules/react-native/ReactAndroid/cmake-utils/ReactNative-application.cmake
+@@ -96,6 +96,14 @@ if(EXISTS ${PROJECT_BUILD_DIR}/generated/autolinking/src/main/jni/Android-autoli
+         foreach(autolinked_library ${AUTOLINKED_LIBRARIES})
+             target_link_libraries(${autolinked_library} common_flags)
+         endforeach()
++        # Windows NDK 27 + lld: link libc++ for autolinked Fabric/codegen targets
++        find_library(RN_APP_AUTOLINK_LIBCXX c++_shared)
++        if(RN_APP_AUTOLINK_LIBCXX)
++          target_link_libraries(${CMAKE_PROJECT_NAME} ${RN_APP_AUTOLINK_LIBCXX})
++          foreach(autolinked_library ${AUTOLINKED_LIBRARIES})
++            target_link_libraries(${autolinked_library} ${RN_APP_AUTOLINK_LIBCXX})
++          endforeach()
++        endif()
+ endif()
+ 
+ # If project is running codegen at the app level, we want to link and build the generated library.
+@@ -104,6 +112,10 @@ if(EXISTS ${PROJECT_BUILD_DIR}/generated/source/codegen/jni/CMakeLists.txt)
+         get_property(APP_CODEGEN_TARGET DIRECTORY ${PROJECT_BUILD_DIR}/generated/source/codegen/jni/ PROPERTY BUILDSYSTEM_TARGETS)
+         target_link_libraries(${CMAKE_PROJECT_NAME} ${APP_CODEGEN_TARGET})
+         target_link_libraries(${APP_CODEGEN_TARGET} common_flags)
++        find_library(RN_APP_CODEGEN_LIBCXX c++_shared)
++        if(RN_APP_CODEGEN_LIBCXX)
++          target_link_libraries(${APP_CODEGEN_TARGET} ${RN_APP_CODEGEN_LIBCXX})
++        endif()
+ 
+         # We need to pass the generated header and module provider to the OnLoad.cpp file so
+         # local app modules can properly be linked.
